@@ -148,16 +148,12 @@ class m_Jc:
             self.C[a][2] = int(self.C[a - self.I][2]) ^ int(b[2])
             self.C[a][3] = int(self.C[a - self.I][3]) ^ int(b[3])
 
-    def vd(self, a, b, c, d):
+    def vd(self, bytes, new_bytes, num):
         for f in range(4):
             for g in range(4):
                 self.j[f].append("")
                 self.wc[f].append("")
-        for f in range(4):
-            for g in range(4):
-                e = 4*g+f+c
-                e = a[e]
-                self.j[f][g] = e
+                self.j[f][g] = bytes[4*g+f+num]
         m_Kc(self, self.Ub)
         for a in range(1, self.Ub, 1):
             m_Lc(self)
@@ -178,53 +174,29 @@ class m_Jc:
         m_Lc(self)
         m_Mc(self)
         m_Kc(self, 0)
-        b += [''] * 16
+        new_bytes += [''] * 16
 
-        if len(b) > 16:
-            d = 16
-        else:
-            d = 0
+        d = 16 if len(new_bytes) > 16 else 0
 
         for a in range(4):
             for c in range(4):
-                b[4*c+a+d] = self.j[a][c]
-        return b
+                new_bytes[4*c+a+d] = self.j[a][c]
+        return new_bytes
 
 
-class m_Tc:
-    wc = [''] * 16
-    P = 16
-
-    def __init__(self, a):
-        self.cg = a
-
-    def vd(self, a, b, c):
-        d = 0
-        f = 0
-        while(f < len(a)):
-            b = self.cg.vd(a, b, f, f)
-            if f == 0:
-                for f in range(16):
-                    b[f] = int(b[f]) ^ int(c[f])
-            else:
-                h = f
-                i = f-self.P
-                for f in range(16):
-                    b[h] = int(b[h]) ^ int(a[i])
-                    h += 1
-                    i += 1
-            d += 1
-            f = d * self.P
-        return b
+zz_cg = m_Jc()
+xor_bytes = [113, 231, 4, 5, 53, 58, 119, 139, 250, 111, 188, 48, 50, 27, 149, 146]
 
 
-class m_Uc:
-    eg = [113, 231, 4, 5, 53, 58, 119, 139, 250, 111, 188, 48, 50, 27, 149, 146]
-    g = [91, 99, 219, 17, 59, 122, 243, 224, 177, 67, 85, 86, 200, 249, 83, 12]
-    a = m_Jc()
+def get_replacement(bytes):
+    new_bytes = []
+    for num in range(0, len(bytes), 16):
+        new_bytes = zz_cg.vd(bytes, new_bytes, num)
+        xor = xor_bytes if num == 0 else bytes
 
-    def __init__(self):
-        self.Oe = m_Tc(self.a)
+        for i in range(16):
+            new_bytes[num + i] = new_bytes[num + i] ^ xor[i]
+    return new_bytes
 
 
 def bytes_to_number(bytes, index):
@@ -260,10 +232,8 @@ def decrypt(image):
     # The bytes to replace
     to_replace = byte_list[index:index+replace_num]
 
-    # Create a new m_Uc object
-    a = m_Uc()
     # Get the replacement bytes
-    replacement = a.Oe.vd(to_replace, [], a.eg)
+    replacement = get_replacement(to_replace)
     # Replace the bytes!
     byte_list[index:index+replace_num] = replacement
 
