@@ -120,7 +120,7 @@ class m_Jc:
         # self.C = ['' for i in range(4*(self.Ub+1))]
         for a in range(self.I):
             self.C[a] = [self.Vb[a*4], self.Vb[a*4+1], self.Vb[a*4+2], self.Vb[a * 4+3]]
-        b = ['', '', '', '']
+        b = [''] * 4
         for a in range(self.I, (4*(self.Ub+1)), 1):
             b[0] = self.C[a-1][0]
             b[1] = self.C[a-1][1]
@@ -178,7 +178,7 @@ class m_Jc:
         m_Lc(self)
         m_Mc(self)
         m_Kc(self, 0)
-        b += ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+        b += [''] * 16
 
         if len(b) > 16:
             d = 16
@@ -265,6 +265,7 @@ def decrypt(image):
     # Get the replacement bytes
     replacement = a.Oe.vd(to_replace, [], a.eg)
     print("Replacement string:", replacement)
+    # Replace the bytes!
     byte_list[index:index+replace_num] = replacement
 
     # Convert back into bytes
