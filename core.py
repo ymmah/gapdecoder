@@ -264,7 +264,6 @@ def decrypt(image):
     a = m_Uc()
     # Get the replacement bytes
     replacement = a.Oe.vd(to_replace, [], a.eg)
-    print("Replacement string:", replacement)
     # Replace the bytes!
     byte_list[index:index+replace_num] = replacement
 
