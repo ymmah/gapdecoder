@@ -1,115 +1,3 @@
-from __future__ import print_function, division
-
-
-def getUrlFragmentTrue(urlImage, x, y, zoom, timestamp):
-    print(str(int(timestamp // 86400)))
-    t = urlImage.split("/")[-1] + "=" + ("x" + str(x) + "-y" + str(y) + "-z" + str(zoom) + "-t" + str(int(timestamp // 86400)))
-    f = []
-    g = 0
-    for h in range(len(t)):
-        i = ord(t[h])
-        f.append(i)
-        g = g+1
-    e = m_fe(m_ge(), [113, 46, 13, 75, 248, 11, 252, 245], 64)
-    e.reset()
-    e.update(f)
-    t = to_string(e.Yb())
-    t = t[: len(t) - 1]
-    t = t.replace("+", "_").replace("/", "_")
-    u = ["http://lh3.ggpht.com", "http://lh4.ggpht.com", "http://lh5.ggpht.com", "http://lh6.ggpht.com"]
-    urlImage = urlImage.replace("http://lh3.ggpht.com", u[(x + y + 1) % len(u)])
-    return urlImage + "=" + ("x" + str(x) + "-y" + str(y) + "-z" + str(zoom)) + "-t" + str(t)
-
-
-def to_string(a):
-    if a[0] == "Not":
-        a = a[1]
-    m_nc = list("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")
-    c = []
-    b = m_nc
-    l = len(a)
-    for d in range(0, l, 3):
-        g = ''
-        i = ''
-        e = a[d]
-        if(d + 1 < l):
-            g = a[d+1]
-        else:
-            g = 0
-        if(d + 2 < l):
-            i = a[d+2]
-        else:
-            i = 0
-        j = int(e) >> 2
-        e = (int(e) & 3) << 4 | int(g) >> 4
-        g = (int(g) & 15) << 2 | int(i) >> 6
-        i = int(i) & 63
-        if not d + 2 < l:
-            i = 64
-            if not d + 1 < l:
-                g = 64
-        try:
-            c.append(b[j])
-        except:
-            pass
-        try:
-            c.append(b[e])
-        except:
-            pass
-        try:
-            c.append(b[g])
-        except:
-            pass
-        try:
-            c.append(b[i])
-        except:
-            pass
-
-    ret = ''.join(map(str, c))
-    return ret
-
-
-class m_fe():
-    T = ''
-    P = ''
-    ze = []
-    od = []
-
-    def Nb(self, a):
-        if len(a) > self.P:
-            self.T.update(a)
-            a = self.T.Yb()
-        for c in range(0, self.P, 1):
-            if c < len(a):
-                b = a[c]
-            else:
-                b = 0
-            self.ze[c] = int(b) ^ 92
-            self.od[c] = int(b) ^ 54
-        self.T.update(self.od)
-
-    def __init__(self, a, b, c):
-        self.T = a
-        self.P = c
-        if c == 0:
-            self.P = 16
-        self.ze = ['' for i in range(0, self.P)]
-        self.od = ['' for i in range(0, self.P)]
-        self.Nb(b)
-
-    def reset(self):
-        self.T.reset()
-        self.T.update(self.od)
-
-    def update(self, a, b=''):
-        self.T.update(a, b)
-
-    def Yb(self):
-        a = self.T.Yb()
-        self.T.reset()
-        self.T.update(self.ze)
-        self.T.update(a)
-        return self.T.Yb()
 
 
 def jsint(a):
@@ -173,77 +61,6 @@ def m_he(a, b):
     a.i[4] = jsint(a.i[4] + j & jsint(4294967295))
 
 
-class m_ge:
-    i = []
-    pd = []
-    Sf = []
-    Bc = []
-
-    def __init__(self):
-        self.Bc.append(128)
-        for i in range(1, 64, 1):
-            self.Bc.append(0)
-        self.i = ['', '', '', '', '']
-        self.reset()
-
-    def reset(self):
-        self.i[0] = (1732584193)
-        self.i[1] = (4023233417)
-        self.i[2] = (2562383102)
-        self.i[3] = (271733878)
-        self.i[4] = (3285377520)
-        self.rd = self.Sb = 0
-
-    def update(self, a, b=''):
-        if b == '':
-            b = len(a)
-        c = self.pd
-        d = self.Sb
-        e = 0
-        if type(a) == str:
-            while e < b:
-                c[d] = ord(a[e])
-                d = d+1
-                e = e+1
-                if d == 64:
-                    m_he(self, c)
-                    d = 0
-        else:
-            if len(c) < d+b-e:
-                for ai in range(0, d+b-e-len(c)):
-                    c.append(0)
-            while e < b:
-                c[d] = a[e]
-                d = d+1
-                e = e+1
-                if d == 64:
-                    m_he(self, c)
-                    d = 0
-        self.Sb = d
-        self.rd = self.rd + b
-
-    def Yb(self):
-        a = []
-        b = 8*self.rd
-        if self.Sb < 56:
-            self.update(self.Bc, 56-self.Sb)
-        else:
-            self.update(self.Bc, 64-(self.Sb-56))
-        for c in range(63, 55, -1):
-            self.pd[c] = b & 255
-            b //= 256
-
-        m_he(self, self.pd)
-        b = 0
-        c = 0
-        for c in range(0, 5, 1):
-            for d in range(24, -1, -8):
-                a.append(self.i[c] >> d & 255)
-                b += 1
-
-        return a
-
-
 m_Sc = [99, 124, 119, 123, 242, 107, 111, 197, 48, 1, 103, 43, 254, 215, 171, 118, 202, 130, 201, 125, 250, 89, 71, 240, 173, 212, 162, 175, 156, 164, 114, 192, 183, 253, 147, 38, 54, 63, 247, 204, 52, 165, 229, 241, 113, 216, 49, 21, 4, 199, 35, 195, 24, 150, 5, 154, 7, 18, 128, 226, 235, 39, 178, 117, 9, 131, 44, 26, 27, 110, 90, 160, 82, 59, 214, 179, 41, 227, 47, 132, 83, 209, 0, 237, 32, 252, 177, 91, 106, 203, 190, 57, 74, 76, 88, 207, 208, 239, 170, 251, 67, 77, 51, 133, 69, 249, 2, 127, 80, 60, 159, 168, 81, 163, 64, 143, 146, 157, 56, 245, 188, 182, 218, 33, 16, 255, 243, 210, 205, 12, 19, 236, 95, 151, 68, 23, 196, 167, 126, 61, 100, 93, 25, 115, 96, 129, 79, 220, 34, 42, 144, 136, 70, 238, 184, 20, 222, 94, 11, 219, 224, 50, 58, 10, 73, 6, 36, 92, 194, 211, 172, 98, 145, 149, 228, 121, 231, 200, 55, 109, 141, 213, 78, 169, 108, 86, 244, 234, 101, 122, 174, 8, 186, 120, 37, 46, 28, 166, 180, 198, 232, 221, 116, 31, 75, 189, 139, 138, 112, 62, 181, 102, 72, 3, 246, 14, 97, 53, 87, 185, 134, 193, 29, 158, 225, 248, 152, 17, 105, 217, 142, 148, 155, 30, 135, 233, 206, 85, 40, 223, 140, 161, 137, 13, 191, 230, 66, 104, 65, 153, 45, 15, 176, 84, 187, 22]
 m_Rc = [82, 9, 106, 213, 48, 54, 165, 56, 191, 64, 163, 158, 129, 243, 215, 251, 124, 227, 57, 130, 155, 47, 255, 135, 52, 142, 67, 68, 196, 222, 233, 203, 84, 123, 148, 50, 166, 194, 35, 61, 238, 76, 149, 11, 66, 250, 195, 78, 8, 46, 161, 102, 40, 217, 36, 178, 118, 91, 162, 73, 109, 139, 209, 37, 114, 248, 246, 100, 134, 104, 152, 22, 212, 164, 92, 204, 93, 101, 182, 146, 108, 112, 72, 80, 253, 237, 185, 218, 94, 21, 70, 87, 167, 141, 157, 132, 144, 216, 171, 0, 140, 188, 211, 10, 247, 228, 88, 5, 184, 179, 69, 6, 208, 44, 30, 143, 202, 63, 15, 2, 193, 175, 189, 3, 1, 19, 138, 107, 58, 145, 17, 65, 79, 103, 220, 234, 151, 242, 207, 206, 240, 180, 230, 115, 150, 172, 116, 34, 231, 173, 53, 133, 226, 249, 55, 232, 28, 117, 223, 110, 71, 241, 26, 113, 29, 41, 197, 137, 111, 183, 98, 14, 170, 24, 190, 27, 252, 86, 62, 75, 198, 210, 121, 32, 154, 219, 192, 254, 120, 205, 90, 244, 31, 221, 168, 51, 136, 7, 199, 49, 177, 18, 16, 89, 39, 128, 236, 95, 96, 81, 127, 169, 25, 181, 74, 13, 45, 229, 122, 159, 147, 201, 156, 239, 160, 224, 59, 77, 174, 42, 245, 176, 200, 235, 187, 60, 131, 83, 153, 97, 23, 43, 4, 126, 186, 119, 214, 38, 225, 105, 20, 99, 85, 33, 12, 125]
 m_Ic = [[0, 0, 0, 0],
@@ -286,20 +103,21 @@ def m_Lc(a):
 
 
 def m_Mc(a):
-    b = m_Rc
     for c in range(4):
         for d in range(4):
-            a.j[c][d] = b[a.j[c][d]]
+            a.j[c][d] = m_Rc[a.j[c][d]]
 
 
 class m_Jc:
-    def __init__(self, a):
-        self.Vb = a
-        self.I = len(self.Vb)//4
-        self.Ub = self.I+6
-        self.j = [[], [], [], []]
-        self.wc = [[], [], [], []]
-        self.C = ['' for i in range(4*(self.Ub+1))]
+    Vb = [91, 99, 219, 17, 59, 122, 243, 224, 177, 67, 85, 86, 200, 249, 83, 12]
+    I = 4
+    Ub = 10
+    j = [[], [], [], []]
+    wc = [[], [], [], []]
+    C = [''] * 44
+
+    def __init__(self):
+        # self.C = ['' for i in range(4*(self.Ub+1))]
         for a in range(self.I):
             self.C[a] = [self.Vb[a*4], self.Vb[a*4+1], self.Vb[a*4+2], self.Vb[a * 4+3]]
         b = ['', '', '', '']
@@ -360,7 +178,7 @@ class m_Jc:
         m_Lc(self)
         m_Mc(self)
         m_Kc(self, 0)
-        b = b + ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+        b += ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
 
         if len(b) > 16:
             d = 16
@@ -374,30 +192,28 @@ class m_Jc:
 
 
 class m_Tc:
-    def __init__(self, a, b):
+    wc = [''] * 16
+    P = 16
+
+    def __init__(self, a):
         self.cg = a
-        # 16 if b is 0
-        self.P = b or 16
-        self.wc = ['' for i in range(0, self.P)]
 
     def vd(self, a, b, c):
         d = 0
         f = 0
-        g = 0
         while(f < len(a)):
             b = self.cg.vd(a, b, f, f)
             if f == 0:
-                for f in range(0, self.P, 1):
+                for f in range(16):
                     b[f] = int(b[f]) ^ int(c[f])
             else:
                 h = f
                 i = f-self.P
-                for f in range(0, self.P, 1):
+                for f in range(16):
                     b[h] = int(b[h]) ^ int(a[i])
                     h += 1
                     i += 1
             d += 1
-            g += 1
             f = d * self.P
         return b
 
@@ -405,10 +221,10 @@ class m_Tc:
 class m_Uc:
     eg = [113, 231, 4, 5, 53, 58, 119, 139, 250, 111, 188, 48, 50, 27, 149, 146]
     g = [91, 99, 219, 17, 59, 122, 243, 224, 177, 67, 85, 86, 200, 249, 83, 12]
-    a = m_Jc([91, 99, 219, 17, 59, 122, 243, 224, 177, 67, 85, 86, 200, 249, 83, 12])
+    a = m_Jc()
 
     def __init__(self):
-        self.Oe = m_Tc(self.a, '')
+        self.Oe = m_Tc(self.a)
 
 
 def bytes_to_number(bytes, index):
@@ -421,32 +237,35 @@ def bytes_to_number(bytes, index):
     return total
 
 
-def decrypt(bytes):
-    # Create a new m_Uc object
-    a = m_Uc()
+def decrypt(image):
+    # return if the encryption marker isn't present at the start of the file
+    if image[:4] != b"\x0A\x0A\x0A\x0A":
+        return image
 
-    # if the header doesn't start with '0A, 0A, 0A, 0A' its not encoded
-    if bytes[:4] != [10, 10, 10, 10]:
-        return bytes
+    # Convert the image to a list of ints (0 -> 255) (for insertion, maths etc)
+    byte_list = list(image)
 
-    # The index of the huffman table in the file
-    index = bytes_to_number(bytes, len(bytes) - 4)
+    # Use the last 4 bytes to get the index of the bytes to be replaced
+    index = bytes_to_number(byte_list, len(byte_list) - 4)
 
-    # Trim the bytes
-    bytes = bytes[4:-4]
+    # Trim out the encryption marker and info bytes
+    byte_list = byte_list[4:-4]
 
     # How many bytes to replace
-    replace_length = bytes_to_number(bytes, index)
+    replace_num = bytes_to_number(byte_list, index)
 
     # Delete the 4 bytes at the start
-    del bytes[index:index+4]
+    del byte_list[index:index+4]
 
     # The bytes to replace
-    to_replace = bytes[index:index+replace_length]
+    to_replace = byte_list[index:index+replace_num]
 
-    # Their replacement
+    # Create a new m_Uc object
+    a = m_Uc()
+    # Get the replacement bytes
     replacement = a.Oe.vd(to_replace, [], a.eg)
     print("Replacement string:", replacement)
-    bytes[index:index+replace_length] = replacement
+    byte_list[index:index+replace_num] = replacement
 
-    return bytes
+    # Convert back into bytes
+    return bytes(byte_list)

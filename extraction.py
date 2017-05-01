@@ -3,14 +3,13 @@ from __future__ import print_function
 
 
 import re
-import urllib.request
 import time
 import os
 import json
 import unicodedata
 import subprocess
 from xml.dom import minidom
-from core import getUrlFragmentTrue, decrypt
+from core import decrypt
 
 # configuration
 
@@ -43,17 +42,11 @@ def getcontentUrl(url, referer=""):
 
 
 def getUrlFragment(urlImage, x, y, zoom, timestamp):
-    return getUrlFragmentTrue(urlImage, x, y, zoom, timestamp)
-
-
-def decrypterFragmentTrue(t):
-    return decrypt(t)
+    return getUrlFragmentTrue(urlImage, x, y, zoom, timestamp)    
 
 
 def decrypterFragment(contentFragment):
-    arrayFragment = list(contentFragment)
-    base64Fragment = decrypterFragmentTrue(arrayFragment)
-    return bytes(base64Fragment)
+    return decrypt(contentFragment)
 
 # info sur un table (painter, titre, date...)
 
