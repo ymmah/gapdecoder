@@ -10,7 +10,7 @@ import json
 import unicodedata
 import subprocess
 from xml.dom import minidom
-from core import getUrlFragmentTrue, decrypt, m_Uc
+from core import getUrlFragmentTrue, decrypt
 
 # configuration
 
@@ -47,7 +47,7 @@ def getUrlFragment(urlImage, x, y, zoom, timestamp):
 
 
 def decrypterFragmentTrue(t):
-    return decrypt(m_Uc(), t)
+    return decrypt(t)
 
 
 def decrypterFragment(contentFragment):

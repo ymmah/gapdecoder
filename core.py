@@ -1,18 +1,12 @@
-from __future__ import print_function
-
-
-def to_int(y):
-    try:
-        return int(y)
-    except ValueError:
-        return 0
+from __future__ import print_function, division
 
 
 def getUrlFragmentTrue(urlImage, x, y, zoom, timestamp):
-    t = urlImage[(urlImage.index("/", urlImage.index("http://") + len("http://") + 1) + 1):] + " = " + ("x" + str(x) + "-y" + str(y) + "-z" + str(zoom) + "-t" + str(int(timestamp / 86400)))
+    print(str(int(timestamp // 86400)))
+    t = urlImage.split("/")[-1] + "=" + ("x" + str(x) + "-y" + str(y) + "-z" + str(zoom) + "-t" + str(int(timestamp // 86400)))
     f = []
     g = 0
-    for h in range(0, len(t), 1):
+    for h in range(len(t)):
         i = ord(t[h])
         f.append(i)
         g = g+1
@@ -20,12 +14,11 @@ def getUrlFragmentTrue(urlImage, x, y, zoom, timestamp):
     e.reset()
     e.update(f)
     t = to_string(e.Yb())
-    print(t)
     t = t[: len(t) - 1]
     t = t.replace("+", "_").replace("/", "_")
     u = ["http://lh3.ggpht.com", "http://lh4.ggpht.com", "http://lh5.ggpht.com", "http://lh6.ggpht.com"]
     urlImage = urlImage.replace("http://lh3.ggpht.com", u[(x + y + 1) % len(u)])
-    return urlImage + " = " + ("x" + str(x) + "-y" + str(y) + "-z" + str(zoom)) + "-t" + str(t)
+    return urlImage + "=" + ("x" + str(x) + "-y" + str(y) + "-z" + str(zoom)) + "-t" + str(t)
 
 
 def to_string(a):
@@ -47,10 +40,10 @@ def to_string(a):
             i = a[d+2]
         else:
             i = 0
-        j = to_int(e) >> 2
-        e = (to_int(e) & 3) << 4 | to_int(g) >> 4
-        g = (to_int(g) & 15) << 2 | to_int(i) >> 6
-        i = to_int(i) & 63
+        j = int(e) >> 2
+        e = (int(e) & 3) << 4 | int(g) >> 4
+        g = (int(g) & 15) << 2 | int(i) >> 6
+        i = int(i) & 63
         if not d + 2 < l:
             i = 64
             if not d + 1 < l:
@@ -91,8 +84,8 @@ class m_fe():
                 b = a[c]
             else:
                 b = 0
-            self.ze[c] = to_int(b) ^ 92
-            self.od[c] = to_int(b) ^ 54
+            self.ze[c] = int(b) ^ 92
+            self.od[c] = int(b) ^ 54
         self.T.update(self.od)
 
     def __init__(self, a, b, c):
@@ -141,7 +134,7 @@ def m_he(a, b):
         for i in range(0, 80-len(d)):
             d.append(0)
     for e in range(c, c+64, 4):
-        d[e / 4] = jsint(b[e] << 24 | b[e + 1] << 16 | b[e + 2] << 8 | b[e + 3])
+        d[e // 4] = jsint(b[e] << 24 | b[e + 1] << 16 | b[e + 2] << 8 | b[e + 3])
     for e in range(16, 80, 1):
         f = jsint(d[e - 3] ^ d[e - 8] ^ d[e - 14] ^ d[e - 16])
         d[e] = (jsint(f << 1) | sr(f, 31)) & jsint(4294967295)
@@ -238,7 +231,7 @@ class m_ge:
             self.update(self.Bc, 64-(self.Sb-56))
         for c in range(63, 55, -1):
             self.pd[c] = b & 255
-            b /= 256
+            b //= 256
 
         m_he(self, self.pd)
         b = 0
@@ -246,16 +239,9 @@ class m_ge:
         for c in range(0, 5, 1):
             for d in range(24, -1, -8):
                 a.append(self.i[c] >> d & 255)
-                b = b+1
+                b += 1
 
         return a
-
-
-def m_Vc(a, b):
-    k1 = jsint(to_int(a[b+1]) << 8)
-    k2 = jsint(to_int(a[b+2]) << 16)
-    k3 = jsint(to_int(a[b+3]) << 24)
-    return to_int(a[b]) + k1 + k2 + k3
 
 
 m_Sc = [99, 124, 119, 123, 242, 107, 111, 197, 48, 1, 103, 43, 254, 215, 171, 118, 202, 130, 201, 125, 250, 89, 71, 240, 173, 212, 162, 175, 156, 164, 114, 192, 183, 253, 147, 38, 54, 63, 247, 204, 52, 165, 229, 241, 113, 216, 49, 21, 4, 199, 35, 195, 24, 150, 5, 154, 7, 18, 128, 226, 235, 39, 178, 117, 9, 131, 44, 26, 27, 110, 90, 160, 82, 59, 214, 179, 41, 227, 47, 132, 83, 209, 0, 237, 32, 252, 177, 91, 106, 203, 190, 57, 74, 76, 88, 207, 208, 239, 170, 251, 67, 77, 51, 133, 69, 249, 2, 127, 80, 60, 159, 168, 81, 163, 64, 143, 146, 157, 56, 245, 188, 182, 218, 33, 16, 255, 243, 210, 205, 12, 19, 236, 95, 151, 68, 23, 196, 167, 126, 61, 100, 93, 25, 115, 96, 129, 79, 220, 34, 42, 144, 136, 70, 238, 184, 20, 222, 94, 11, 219, 224, 50, 58, 10, 73, 6, 36, 92, 194, 211, 172, 98, 145, 149, 228, 121, 231, 200, 55, 109, 141, 213, 78, 169, 108, 86, 244, 234, 101, 122, 174, 8, 186, 120, 37, 46, 28, 166, 180, 198, 232, 221, 116, 31, 75, 189, 139, 138, 112, 62, 181, 102, 72, 3, 246, 14, 97, 53, 87, 185, 134, 193, 29, 158, 225, 248, 152, 17, 105, 217, 142, 148, 155, 30, 135, 233, 206, 85, 40, 223, 140, 161, 137, 13, 191, 230, 66, 104, 65, 153, 45, 15, 176, 84, 187, 22]
@@ -278,31 +264,31 @@ m_Nc = [0, 14, 28, 18, 56, 54, 36, 42, 112, 126, 108, 98, 72, 70, 84, 90, 224, 2
 
 
 def m_Hc(a):
-        a[0] = m_Sc[a[0]]
-        a[1] = m_Sc[a[1]]
-        a[2] = m_Sc[a[2]]
-        a[3] = m_Sc[a[3]]
+    a[0] = m_Sc[a[0]]
+    a[1] = m_Sc[a[1]]
+    a[2] = m_Sc[a[2]]
+    a[3] = m_Sc[a[3]]
 
 
 def m_Kc(a, b):
-    for c in range(0, 4, 1):
-        for d in range(0, 4, 1):
+    for c in range(4):
+        for d in range(4):
             a.j[c][d] = a.j[c][d] ^ a.C[4 * b + d][c]
 
 
 def m_Lc(a):
-    for b in range(1, 4, 1):
-        for c in range(0, 4, 1):
+    for b in range(1, 4):
+        for c in range(4):
             a.wc[b][(c+b) % 4] = a.j[b][c]
-    for b in range(1, 4, 1):
-        for c in range(0, 4, 1):
+    for b in range(1, 4):
+        for c in range(4):
             a.j[b][c] = a.wc[b][c]
 
 
 def m_Mc(a):
     b = m_Rc
-    for c in range(0, 4, 1):
-        for d in range(0, 4, 1):
+    for c in range(4):
+        for d in range(4):
             a.j[c][d] = b[a.j[c][d]]
 
 
@@ -313,8 +299,8 @@ class m_Jc:
         self.Ub = self.I+6
         self.j = [[], [], [], []]
         self.wc = [[], [], [], []]
-        self.C = ['' for i in range(0, 4*(self.Ub+1))]
-        for a in range(0, self.I, 1):
+        self.C = ['' for i in range(4*(self.Ub+1))]
+        for a in range(self.I):
             self.C[a] = [self.Vb[a*4], self.Vb[a*4+1], self.Vb[a*4+2], self.Vb[a * 4+3]]
         b = ['', '', '', '']
         for a in range(self.I, (4*(self.Ub+1)), 1):
@@ -330,27 +316,27 @@ class m_Jc:
                 c[2] = c[3]
                 c[3] = d
                 m_Hc(b)
-                b[0] = to_int(b[0]) ^ to_int(m_Ic[a // self.I][0])
-                b[1] = to_int(b[1]) ^ to_int(m_Ic[a // self.I][1])
-                b[2] = to_int(b[2]) ^ to_int(m_Ic[a // self.I][2])
-                b[3] = to_int(b[3]) ^ to_int(m_Ic[a // self.I][3])
+                b[0] = int(b[0]) ^ int(m_Ic[a // self.I][0])
+                b[1] = int(b[1]) ^ int(m_Ic[a // self.I][1])
+                b[2] = int(b[2]) ^ int(m_Ic[a // self.I][2])
+                b[3] = int(b[3]) ^ int(m_Ic[a // self.I][3])
 
             else:
                 if (6 < self.I) and (4 == a % self.I):
                     m_Hc(b)
             self.C[a] = ['', '', '', '']
-            self.C[a][0] = to_int(self.C[a - self.I][0]) ^ to_int(b[0])
-            self.C[a][1] = to_int(self.C[a - self.I][1]) ^ to_int(b[1])
-            self.C[a][2] = to_int(self.C[a - self.I][2]) ^ to_int(b[2])
-            self.C[a][3] = to_int(self.C[a - self.I][3]) ^ to_int(b[3])
+            self.C[a][0] = int(self.C[a - self.I][0]) ^ int(b[0])
+            self.C[a][1] = int(self.C[a - self.I][1]) ^ int(b[1])
+            self.C[a][2] = int(self.C[a - self.I][2]) ^ int(b[2])
+            self.C[a][3] = int(self.C[a - self.I][3]) ^ int(b[3])
 
     def vd(self, a, b, c, d):
-        for f in range(0, 4, 1):
-            for g in range(0, 4, 1):
+        for f in range(4):
+            for g in range(4):
                 self.j[f].append("")
                 self.wc[f].append("")
-        for f in range(0, 4, 1):
-            for g in range(0, 4, 1):
+        for f in range(4):
+            for g in range(4):
                 e = 4*g+f+c
                 e = a[e]
                 self.j[f][g] = e
@@ -381,8 +367,8 @@ class m_Jc:
         else:
             d = 0
 
-        for a in range(0, 4, 1):
-            for c in range(0, 4, 1):
+        for a in range(4):
+            for c in range(4):
                 b[4*c+a+d] = self.j[a][c]
         return b
 
@@ -390,10 +376,8 @@ class m_Jc:
 class m_Tc:
     def __init__(self, a, b):
         self.cg = a
-        if not b:
-            self.P = 16
-        else:
-            self.P = b
+        # 16 if b is 0
+        self.P = b or 16
         self.wc = ['' for i in range(0, self.P)]
 
     def vd(self, a, b, c):
@@ -404,24 +388,21 @@ class m_Tc:
             b = self.cg.vd(a, b, f, f)
             if f == 0:
                 for f in range(0, self.P, 1):
-                    b[f] = to_int(b[f]) ^ to_int(c[f])
+                    b[f] = int(b[f]) ^ int(c[f])
             else:
                 h = f
                 i = f-self.P
                 for f in range(0, self.P, 1):
-                    b[h] = to_int(b[h]) ^ to_int(a[i])
-                    h = h+1
-                    i = i+1
-            d = d+1
-            g = g+1
-            f = d*self.P
+                    b[h] = int(b[h]) ^ int(a[i])
+                    h += 1
+                    i += 1
+            d += 1
+            g += 1
+            f = d * self.P
         return b
 
 
 class m_Uc:
-    dg = 4
-    Se = 4
-    Re = 4
     eg = [113, 231, 4, 5, 53, 58, 119, 139, 250, 111, 188, 48, 50, 27, 149, 146]
     g = [91, 99, 219, 17, 59, 122, 243, 224, 177, 67, 85, 86, 200, 249, 83, 12]
     a = m_Jc([91, 99, 219, 17, 59, 122, 243, 224, 177, 67, 85, 86, 200, 249, 83, 12])
@@ -430,19 +411,32 @@ class m_Uc:
         self.Oe = m_Tc(self.a, '')
 
 
-def decrypt(a, bytes):
-    # if the header doesn't start with 0A, 0A, 0A, 0A (encoded)
+def bytes_to_number(bytes, index):
+    # Add up the bytes, bitwise shifting from small to large
+    # E.g. '20, 01, 00, 00' -> 32 + (1 << 8) -> 288
+    total = bytes[index]
+    total += bytes[index+1] << 8
+    total += bytes[index+2] << 16
+    total += bytes[index+3] << 24
+    return total
+
+
+def decrypt(bytes):
+    # Create a new m_Uc object
+    a = m_Uc()
+
+    # if the header doesn't start with '0A, 0A, 0A, 0A' its not encoded
     if bytes[:4] != [10, 10, 10, 10]:
         return bytes
 
-    # The offset of the huff
-    index = m_Vc(bytes, len(bytes) - 4)
+    # The index of the huffman table in the file
+    index = bytes_to_number(bytes, len(bytes) - 4)
 
     # Trim the bytes
     bytes = bytes[4:-4]
 
     # How many bytes to replace
-    replace_length = m_Vc(bytes, index)
+    replace_length = bytes_to_number(bytes, index)
 
     # Delete the 4 bytes at the start
     del bytes[index:index+4]
@@ -450,6 +444,7 @@ def decrypt(a, bytes):
     # The bytes to replace
     to_replace = bytes[index:index+replace_length]
 
+    # Their replacement
     replacement = a.Oe.vd(to_replace, [], a.eg)
     print("Replacement string:", replacement)
     bytes[index:index+replace_length] = replacement
