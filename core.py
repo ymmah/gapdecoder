@@ -47,23 +47,14 @@ def m_Mc(a):
 
 class m_Jc:
     Vb = [91, 99, 219, 17, 59, 122, 243, 224, 177, 67, 85, 86, 200, 249, 83, 12]
-    I = 4
-    Ub = 10
     j = [[], [], [], []]
     wc = [[], [], [], []]
-    C = [''] * 44
 
     def __init__(self):
-        # self.C = ['' for i in range(4*(self.Ub+1))]
-        for a in range(self.I):
-            self.C[a] = [self.Vb[a*4], self.Vb[a*4+1], self.Vb[a*4+2], self.Vb[a * 4+3]]
-        b = [''] * 4
-        for a in range(self.I, (4*(self.Ub+1)), 1):
-            b[0] = self.C[a-1][0]
-            b[1] = self.C[a-1][1]
-            b[2] = self.C[a-1][2]
-            b[3] = self.C[a-1][3]
-            if(a % self.I) == 0:
+        self.C = [[self.Vb[a*4], self.Vb[a*4+1], self.Vb[a*4+2], self.Vb[a * 4+3]] for a in range(4)] 
+        for a in range(4, 44):
+            b = [byte for byte in self.C[a-1]]
+            if a % 4 == 0:
                 c = b
                 d = c[0]
                 c[0] = c[1]
@@ -71,34 +62,30 @@ class m_Jc:
                 c[2] = c[3]
                 c[3] = d
                 m_Hc(b)
-                b[0] = int(b[0]) ^ int(m_Ic[a // self.I][0])
-                b[1] = int(b[1]) ^ int(m_Ic[a // self.I][1])
-                b[2] = int(b[2]) ^ int(m_Ic[a // self.I][2])
-                b[3] = int(b[3]) ^ int(m_Ic[a // self.I][3])
+                b[0] = b[0] ^ m_Ic[a // 4][0]
+                b[1] = b[1] ^ m_Ic[a // 4][1]
+                b[2] = b[2] ^ m_Ic[a // 4][2]
+                b[3] = b[3] ^ m_Ic[a // 4][3]
 
             else:
-                if (6 < self.I) and (4 == a % self.I):
+                if (6 < 4) and (4 == a % 4):
                     m_Hc(b)
-            self.C[a] = ['', '', '', '']
-            self.C[a][0] = int(self.C[a - self.I][0]) ^ int(b[0])
-            self.C[a][1] = int(self.C[a - self.I][1]) ^ int(b[1])
-            self.C[a][2] = int(self.C[a - self.I][2]) ^ int(b[2])
-            self.C[a][3] = int(self.C[a - self.I][3]) ^ int(b[3])
+            self.C.append([self.C[a - 4][i] ^ b[i] for i in range(4)])
 
     def vd(self, bytes, new_bytes, num):
         for f in range(4):
             for g in range(4):
-                self.j[f].append("")
-                self.wc[f].append("")
+                self.j[f].append(None)
+                self.wc[f].append(None)
                 self.j[f][g] = bytes[4*g+f+num]
-        m_Kc(self, self.Ub)
-        for a in range(1, self.Ub, 1):
+        m_Kc(self, 10)
+        for a in range(1, 10):
             m_Lc(self)
             m_Mc(self)
-            m_Kc(self, self.Ub-a)
+            m_Kc(self, 10-a)
             c = self.j
             f = self.wc[0]
-            for g in range(0, 4):
+            for g in range(4):
                 f[0] = c[0][g]
                 f[1] = c[1][g]
                 f[2] = c[2][g]
@@ -113,11 +100,10 @@ class m_Jc:
         m_Kc(self, 0)
         new_bytes += [''] * 16
 
-        d = 16 if len(new_bytes) > 16 else 0
+        offset = 16 if len(new_bytes) > 16 else 0
 
-        for a in range(4):
-            for c in range(4):
-                new_bytes[4*c+a+d] = self.j[a][c]
+        for a in range(16):
+            new_bytes[a + offset] = self.j[a % 4][a // 4]
         return new_bytes
 
 
