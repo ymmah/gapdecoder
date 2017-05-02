@@ -19,65 +19,65 @@ magic_table = [
 ]
 
 
-class Decrypter:
-    def get_new_bytes(self, bytes, new_bytes, index):
-        # Split the bytes down into groups of 4
-        self.split_bytes = [bytes[index + i:index + i + 4] for i in range(0, 16, 4)]
-        # Xor by magic table
-        self.xor_bytes_by_magic_table(0)
-        # Loop through magic table
-        for a in range(1, 10):
-            # Map the bytes
-            self.map_bytes()
-            # Xor again by the table index
-            self.xor_bytes_by_magic_table(a)
-            for i in range(4):
-                # Copy the split bytes
-                temp = [value for value in self.split_bytes[i]]
-                # Xor them with the magic lists
-                self.split_bytes[i][0] = magic_4[temp[0]] ^ magic_2[temp[1]] ^ magic_3[temp[2]] ^ magic_1[temp[3]]
-                self.split_bytes[i][1] = magic_1[temp[0]] ^ magic_4[temp[1]] ^ magic_2[temp[2]] ^ magic_3[temp[3]]
-                self.split_bytes[i][2] = magic_3[temp[0]] ^ magic_1[temp[1]] ^ magic_4[temp[2]] ^ magic_2[temp[3]]
-                self.split_bytes[i][3] = magic_2[temp[0]] ^ magic_3[temp[1]] ^ magic_1[temp[2]] ^ magic_4[temp[3]]
+def get_new_bytes(bytes, new_bytes, index):
+    # Split the bytes down into groups of 4
+    split_bytes = [bytes[index + i:index + i + 4] for i in range(0, 16, 4)]
+    # Xor by magic table
+    xor_bytes_by_magic_table(split_bytes, 0)
+    # Loop through magic table
+    for row in range(1, 10):
+        # Map the bytes
+        map_bytes(split_bytes)
+        # Xor again by the table index
+        xor_bytes_by_magic_table(split_bytes, row)
 
-        # Map and xor
-        self.map_bytes()
-        self.xor_bytes_by_magic_table(10)
+        for i in range(4):
+            # Copy the split bytes
+            temp = [value for value in split_bytes[i]]
+            # Xor them with the magic lists
+            split_bytes[i][0] = magic_4[temp[0]] ^ magic_2[temp[1]] ^ magic_3[temp[2]] ^ magic_1[temp[3]]
+            split_bytes[i][1] = magic_1[temp[0]] ^ magic_4[temp[1]] ^ magic_2[temp[2]] ^ magic_3[temp[3]]
+            split_bytes[i][2] = magic_3[temp[0]] ^ magic_1[temp[1]] ^ magic_4[temp[2]] ^ magic_2[temp[3]]
+            split_bytes[i][3] = magic_2[temp[0]] ^ magic_3[temp[1]] ^ magic_1[temp[2]] ^ magic_4[temp[3]]
 
-        # Add the new bytes to the list
-        for a in range(4):
-            new_bytes += self.split_bytes[a]
-        return new_bytes
-    
-    def xor_bytes_by_magic_table(self, row):
-        for y in range(4):
-            for x in range(4):
-                # Xor by the row of the magic table
-                self.split_bytes[y][x] = self.split_bytes[y][x] ^ magic_table[row][y][x]
+    # Map and xor
+    map_bytes(split_bytes)
+    xor_bytes_by_magic_table(split_bytes, 10)
+
+    # Add the new bytes to the list
+    for a in range(4):
+        new_bytes += split_bytes[a]
+    return new_bytes
 
 
-    def map_bytes(self):
-        # Set up 4x4 key matrix
-        keys = [[None for _ in range(4)] for _ in range(4)]
+def xor_bytes_by_magic_table(split_bytes, row):
+    for y in range(4):
+        for x in range(4):
+            # Xor by the row of the magic table
+            split_bytes[y][x] = split_bytes[y][x] ^ magic_table[row][y][x]
 
-        for y in range(4):
-            for x in range(4):
-                # set keys to ~= split_bytes
-                keys[(y + x) % 4][x] = self.split_bytes[y][x]
-        for y in range(4):
-            for x in range(4):
-                # Set split bytes to keys and map to magic_mapping
-                self.split_bytes[y][x] = magic_mapping[keys[y][x]]
+
+def map_bytes(split_bytes):
+    # Set up 4x4 key matrix
+    keys = [[None for _ in range(4)] for _ in range(4)]
+
+    for y in range(4):
+        for x in range(4):
+            # set keys to ~= split_bytes
+            keys[(y + x) % 4][x] = split_bytes[y][x]
+    for y in range(4):
+        for x in range(4):
+            # Set split bytes to keys and map to magic_mapping
+            split_bytes[y][x] = magic_mapping[keys[y][x]]
+        
 
 def get_replacement(bytes):
-    # Set up decrypter
-    decrypter = Decrypter()
     # Setup up list of new bytes
     new_bytes = []
     # Loop through chunks of 16
     for index in range(0, len(bytes), 16):
         # Get the new bytes
-        new_bytes = decrypter.get_new_bytes(bytes, new_bytes, index)
+        new_bytes = get_new_bytes(bytes, new_bytes, index)
         # Get the bytes to xor with
         xor = xor_bytes if index == 0 else bytes
 
