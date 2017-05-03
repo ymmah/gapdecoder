@@ -1,0 +1,1 @@
+[decrypt](decryption.py#L99) from [decryption.py](decryption.py) will decode the image tiles from [Google Arts & Culture](https://www.google.com/culturalinstitute/beta) (formerly the Google Art Project). See [example.py](example.py) for an example.
