@@ -1,4 +1,4 @@
-from core import decrypt
+from decryption import decrypt
 import sys
 import os
 
